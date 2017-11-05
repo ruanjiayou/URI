@@ -1,0 +1,30 @@
+{
+  "name": "uri",
+  "version": "1.0.0",
+  "description": "URI解析",
+  "main": "uri.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/parse.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:ruanjiayou/URI.git"
+  },
+  "keywords": [
+    "js",
+    "uri",
+    "parse"
+  ],
+  "author": "ruanjiayou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruanjiayou/URI/issues"
+  },
+  "homepage": "https://github.com/ruanjiayou/URI#readme",
+  "devDependencies": {
+    "should": "^13.1.3"
+  }
+}
