@@ -15,9 +15,9 @@ class Uri {
         // 端口 
         this.port = '';
         // 路径 file协议也是这个
-        this.pathname = '/';
+        this.pathname = '';
         // 查询参数 ?开头
-        this.query = {};
+        this.search = '';
         // 锚点 #开头
         this.hash = '';
         // other 
@@ -49,7 +49,7 @@ class Uri {
         } else {
             return this.create(str);
         }
-        if (Uri.HREF.has(this.protocol) || this.protocol === 'malto:') {
+        if (Uri.HREF.has(this.protocol)) {
             // 去掉开头的/ file:类型要保留第三个/
             str = str.replace(/^[/]{0,2}/, '');
             // 4.username password
@@ -95,8 +95,35 @@ class Uri {
      */
     format(json) {
         for (let k in json) {
-            if (json.hasOwnerProperty(k)) {
-                this[k] = json[k];
+            switch(k){
+                case 'protocol': 
+                    this.protocol = json[k];
+                break;
+                case 'username': 
+                    this.username = json[k];
+                break;
+                case 'password': 
+                    this.password = json[k];
+                break;
+                case 'hostname': 
+                    this.hostname = json[k];
+                break;
+                case 'port':
+                    this.port = json[k];
+                break;
+                case 'pathname': 
+                    this.pathname = json[k];
+                break;
+                case 'search': 
+                    this.search = json[k];
+                break;
+                case 'hash': 
+                    this.hash = json[k];
+                break;
+                case 'other': 
+                    this.other = json[k];
+                break;
+                default: break;
             }
         }
         return this;
@@ -125,7 +152,7 @@ class Uri {
     }
 
     set protocol(str) {
-        this._protocol = /^([0-9a-z]+)[:]?$/i.test(str) ? RegExp.$1 + ':' : 'http:';
+        this._protocol = /^([0-9a-z]+)[:]?$/i.test(str.toLowerCase()) ? RegExp.$1 + ':' : 'http:';
     }
     set username(str) {
         this._username = str;
@@ -148,15 +175,15 @@ class Uri {
     }
     set search(str) {
         str = str.replace('#', '%23');
-        if (str && str.charAt(0) !== '?') {
-            str = '?' + str;
+        if (str && str.charAt(0) === '?') {
+            str = str.substring(1);
         }
-        this.query = {};
-        var paramArr = str.substr(1).split('&');
-        for (let i = 0; i < paramArr.length - 1; i++) {
+        this._search = [];
+        var paramArr = str.split('&');
+        for (let i = 0; i < paramArr.length; i++) {
             let temp = paramArr[i].split('=');
             if (temp.length === 2 && temp[0] !== '') {
-                this.query[temp[0]] = temp[1];
+                this._search.push([temp[0], temp[1]]);
             }
         }
     }
@@ -221,18 +248,18 @@ class Uri {
         return this._pathname;
     }
     get search() {
-        let res = '';
-        for (let key in this.query) {
-            if (this.params.hasOwnerProperty(key)) {
-                res += '&' + key + '=' + this.query[key];
-            }
-        }
-        return res === '' ? '' : '?' + res.substring(1);
+        let res = this._search.map(function(item){
+            return item[0] + '=' + item[1];
+        }).join('&');
+        return res === '' ? '' : '?' + res;
     }
     get hash() {
         return this._hash;
     }
+    get other() {
+        return this._other;
+    }
 }
-Uri.HREF = new Set(['ftp:', 'http:', 'https:', 'file:']);
+Uri.HREF = new Set(['ftp:', 'http:', 'https:', 'file:', 'mailto:']);
 
 module.exports = Uri;
