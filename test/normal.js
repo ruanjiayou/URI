@@ -172,21 +172,70 @@ describe('Uri.format()', function(){
 // 测试ToString()函数
 describe('Uri.toString()', function(){
     it('http->', function(){
-        assert(uri_http.toString(), 'http://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
+        assert.equal(uri_http.toString(), 'http://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
     });
     it('https->', function(){
-        assert(uri_https.toString(), 'https://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
+        assert.equal(uri_https.toString(), 'https://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
     });
     it('ftp->', function(){
-        assert(uri_ftp.toString(), 'ftp://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
+        assert.equal(uri_ftp.toString(), 'ftp://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
     });
     it('javascript->', function(){
-        assert(uri_javascript.toString(), 'javascript:void(0);');
+        assert.equal(uri_javascript.toString(), 'javascript:void(0);');
     });
     it('mailto->', function(){
-        assert(uri_mailto.toString(), 'mailto:1439120442@jiayou.com');
+        assert.equal(uri_mailto.toString(), 'mailto:1439120442@jiayou.com');
     });
     it('tel->', function(){
-        assert(uri_tel.toString(), 'tel:18972376482');
+        assert.equal(uri_tel.toString(), 'tel:18972376482');
+    });
+});
+// 测试create()函数
+describe('Uri.create()', function(){
+    var o = new Uri('http://qiao:123456@jiayou.com/api/v1/info.html?time=123&op=edit#top');
+    it('根路径表示', function(){
+        var temp = o.create('/admin/logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/admin/logo.png?size=1080*720');
+    });
+    it('当前./路径表示', function(){
+        var temp = o.create('./admin/logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/api/v1/admin/logo.png?size=1080*720');
+    });
+    it('当前路径表示(文件夹', function(){
+        var temp = o.create('admin/logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/api/v1/admin/logo.png?size=1080*720');
+    });
+    it('当前路径表示(文件', function(){
+        var temp = o.create('logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/api/v1/logo.png?size=1080*720');
+    });
+    it('../路径表示', function(){
+        var temp = o.create('../admin/logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/api/admin/logo.png?size=1080*720');
+    });
+    it('../路径表示(越界', function(){
+        var temp = o.create('../../../admin/logo.png?size=1080*720');
+        assert.equal(temp.toString(), 'http://qiao:123456@jiayou.com/admin/logo.png?size=1080*720');
+    });
+        
+});
+// 测试shortOf()
+describe('Uri.shortOf()', function(){
+    var obase = new Uri('http://qiao:123456@jiayou.com/admin/tag/index.html');
+    it('子级文件夹', function(){
+        var o = new Uri('http://qiao:123456@jiayou.com/admin/tag/images/logo.png?type=huawei&size=1080*720#top');
+        assert.equal(o.shortOf(obase), 'images/logo.png?type=huawei&size=1080*720#top');
+    });
+    it('同级文件夹', function(){
+        var o = new Uri('http://qiao:123456@jiayou.com/admin/tag/logo.png?type=huawei&size=1080*720#top');
+        assert.equal(o.shortOf(obase), 'logo.png?type=huawei&size=1080*720#top');
+    });
+    it('父级文件夹', function(){
+        var o = new Uri('http://qiao:123456@jiayou.com/admin/logo.png?type=huawei&size=1080*720#top');
+        assert.equal(o.shortOf(obase), '../logo.png?type=huawei&size=1080*720#top');
+    });
+    it('父级同级子文件夹', function(){
+        var o = new Uri('http://qiao:123456@jiayou.com/admin/cate/logo.png?type=huawei&size=1080*720#top');
+        assert.equal(o.shortOf(obase), '../cate/logo.png?type=huawei&size=1080*720#top');
     });
 });

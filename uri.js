@@ -49,7 +49,7 @@ class Uri {
         } else {
             return this.create(str);
         }
-        if (Uri.HREF.has(this.protocol)) {
+        if (Uri.HREF.has(this.protocol) || this.protocol === 'mailto:') {
             // 去掉开头的/ file:类型要保留第三个/
             str = str.replace(/^[/]{0,2}/, '');
             // 4.username password
@@ -95,34 +95,34 @@ class Uri {
      */
     format(json) {
         for (let k in json) {
-            switch(k){
-                case 'protocol': 
+            switch (k) {
+                case 'protocol':
                     this.protocol = json[k];
-                break;
-                case 'username': 
+                    break;
+                case 'username':
                     this.username = json[k];
-                break;
-                case 'password': 
+                    break;
+                case 'password':
                     this.password = json[k];
-                break;
-                case 'hostname': 
+                    break;
+                case 'hostname':
                     this.hostname = json[k];
-                break;
+                    break;
                 case 'port':
                     this.port = json[k];
-                break;
-                case 'pathname': 
+                    break;
+                case 'pathname':
                     this.pathname = json[k];
-                break;
-                case 'search': 
+                    break;
+                case 'search':
                     this.search = json[k];
-                break;
-                case 'hash': 
+                    break;
+                case 'hash':
                     this.hash = json[k];
-                break;
-                case 'other': 
+                    break;
+                case 'other':
                     this.other = json[k];
-                break;
+                    break;
                 default: break;
             }
         }
@@ -134,7 +134,7 @@ class Uri {
      */
     toString() {
         // url other 两种种类型
-        return this.protocol + this.userinfo + this.host + this.path + this.search + this.hash + this.other;
+        return this.protocol + (Uri.HREF.has(this.protocol) ? '//' : '') + this.userinfo + this.host + this.path + this.hash + this.other;
     }
     /**
      * 依据当前URI对象，将字符串解析为URI对象并返回。可以是相对路径。
@@ -142,13 +142,86 @@ class Uri {
      * @return {object} 
      */
     create(str) {
-
+        var uri,
+            ps,
+            cs,
+            index,
+            path = '',
+            other = '';
+        if (/^(\w+)[:](.+)$/.test(str) || /^[/]{2}(.+)/.test(str)) {
+            return new Uri(str);
+        }
+        uri = new Uri().format({
+            'protocol': this.protocol,
+            'username': this.username,
+            'password': this.password,
+            'hostname': this.hostname,
+            'port': this.port
+        });
+        //分离出path
+        index = str.indexOf('?');
+        if (index !== -1) {
+            other = str.substring(index);
+            str = str.substring(0, index);
+        }
+        path = str;
+        // 分离search.hash
+        index = other.indexOf('#');
+        if (index !== -1) {
+            uri.hash = other.substring(index);
+            other = other.substring(0, index);
+        }
+        uri.search = other;
+        ps = path.charAt(0) === '/' ? [] : this.pathname.split('/');
+        cs = path.split('/');
+        // 路径比较处理 - 去掉最后的文件
+        if (ps.length > 0 && /.[.]./.test(ps[ps.length - 1])) {
+            ps.pop();
+        }
+        while (cs.length !== 0) {
+            if (cs[0] === '.') {
+                cs.shift();
+                break;
+            } else if (cs[0] === '..') {
+                cs.shift();
+                ps.pop();
+            } else {
+                break;
+            }
+        }
+        ps = ps.concat(cs);
+        for (var i = ps.length - 1; i > 0; i--) {
+            if (ps[i] === '') {
+                ps.splice(i, 1);
+            }
+        }
+        uri.pathname = ps.join('/');
+        return uri;
     }
     /**
      * 根据指定URI对象，将对象本身转换为相对url路径。协议必须是http或https。
      */
-    shortOf() {
-
+    shortOf(parent) {
+        var ps = parent.pathname.split('/'),
+            cs = this.pathname.split('/'),
+            len = ps.length < cs.length ? cs.length : ps.length,
+            diffIndex = 0,
+            i = 0,
+            res = '';
+        if(ps.length>0 && /.[.]./.test(ps[ps.length-1])){
+            ps.pop();
+        }
+        // compare directory
+        for (; i < len; i++) {
+            if (cs[i] !== ps[i]) {
+                diffIndex = i;
+                break;
+            }
+        }
+        ps.splice(0, diffIndex);
+        res += ps.map(function(item){ return '../'; }).join('');
+        res += cs.splice(diffIndex).join('/');
+        return res + this.search + this.hash;
     }
 
     set protocol(str) {
@@ -189,7 +262,7 @@ class Uri {
     }
     set hash(str) {
         if (str && str.charAt(0) !== '#') {
-            str = '#' + str;
+            str = `#${str}`;
         }
         this._hash = str;
     }
@@ -211,13 +284,13 @@ class Uri {
         return res;
     }
     get host() {
-        return this.hostname + (this.port === '' ? '' : ':' + this.port);
+        return this.hostname + (this.port === '' ? '' : `:${this.port}`);
     }
     get userinfo() {
         let res = this.username;
         if (res) {
             if (this.password) {
-                res += ':' + this.password;
+                res += `:${this.password}`;
             }
             res += '@';
         }
@@ -245,13 +318,13 @@ class Uri {
         return this._port;
     }
     get pathname() {
-        return this._pathname;
+        return Uri.HREF.has(this.protocol) && this._pathname.charAt(0) !== '/' ? `/${this._pathname}` : this._pathname;
     }
     get search() {
-        let res = this._search.map(function(item){
-            return item[0] + '=' + item[1];
+        let res = this._search.map(function (item) {
+            return `${item[0]}=${item[1]}`;
         }).join('&');
-        return res === '' ? '' : '?' + res;
+        return res === '' ? '' : `?${res}`;
     }
     get hash() {
         return this._hash;
@@ -260,6 +333,6 @@ class Uri {
         return this._other;
     }
 }
-Uri.HREF = new Set(['ftp:', 'http:', 'https:', 'file:', 'mailto:']);
+Uri.HREF = new Set(['ftp:', 'http:', 'https:', 'file:']);
 
 module.exports = Uri;
