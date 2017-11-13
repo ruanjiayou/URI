@@ -47,7 +47,7 @@ class Uri {
             this.protocol = temp[1];
             str = temp[2];
         } else {
-            return this.create(str);
+            this.protocol = 'http:';
         }
         if (Uri.HREF.has(this.protocol) || this.protocol === 'mailto:') {
             // 去掉开头的/ file:类型要保留第三个/

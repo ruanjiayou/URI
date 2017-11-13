@@ -88,4 +88,31 @@ describe('Uri.parse()', function(){
         assert.equal(o.hash, '');
         assert.equal(o.other, '');
     });
+    it('parse http strict-pathname', function(){
+        var o1 = new Uri('http://www.jiayou.com');
+        var o2 = new Uri('http://www.jiayou.com/');
+        assert.equal(o1.pathname, '/');
+        assert.equal(o2.pathname, '/');
+    });
+    it('parse http strict-hash', function(){
+        var o1 = new Uri('http://www.jiayou.com/#top');
+        var o2 = new Uri('http://www.jiayou.com/##top');
+        assert.equal(o1.hash, '#top');
+        assert.equal(o2.hash, '##top');
+    });
+    it('parse //开头的', function(){
+        var o = new Uri('//upload-images.jianshu.io/upload_images/1908904-1cc78e4125891a10.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240');
+        assert.equal(o.protocol, 'http:');
+    });
+    it('parse magnet', function(){
+        var o = new Uri('magnet:?xt=urn:btih:AC7E66737FD707F26FA5619AC4F0CA2C591E85AB');
+        assert.equal(o.protocol, 'magnet:');
+        assert.equal(o.other, '?xt=urn:btih:AC7E66737FD707F26FA5619AC4F0CA2C591E85AB');
+    });
+    it('parse ip', function(){
+        var o = new Uri('http://192.168.1.11:80');
+        assert.equal(o.protocol, 'http:');
+        assert.equal(o.hostname, '192.168.1.11');
+        assert.equal(o.port, '80');
+    });
 });
