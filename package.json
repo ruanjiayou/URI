@@ -1,5 +1,5 @@
 {
-  "name": "uri",
+  "name": "uri-parser-helper",
   "version": "0.0.1",
   "description": "URI解析",
   "main": "uri.js",
@@ -19,7 +19,7 @@
     "parse"
   ],
   "author": "ruanjiayou",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ruanjiayou/URI/issues"
   },
