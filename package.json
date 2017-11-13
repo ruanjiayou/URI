@@ -1,6 +1,6 @@
 {
   "name": "uri",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "URI解析",
   "main": "uri.js",
   "directories": {
@@ -23,8 +23,5 @@
   "bugs": {
     "url": "https://github.com/ruanjiayou/URI/issues"
   },
-  "homepage": "https://github.com/ruanjiayou/URI#readme",
-  "devDependencies": {
-    "should": "^13.1.3"
-  }
+  "homepage": "https://github.com/ruanjiayou/URI#readme"
 }
