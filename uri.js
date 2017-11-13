@@ -223,7 +223,18 @@ class Uri {
         res += cs.splice(diffIndex).join('/');
         return res + this.search + this.hash;
     }
-
+    /**
+     * 获取参数值
+     * @param {string} key - 参数名称
+     */
+    query(key){
+        for(var i = this._search.length-1;i>=0;i--){
+            if(key === this._search[i][0]){
+                return this._search[i][1];
+            }
+        }
+        return null;
+    }
     set protocol(str) {
         this._protocol = /^([0-9a-z]+)[:]?$/i.test(str.toLowerCase()) ? RegExp.$1 + ':' : 'http:';
     }
@@ -255,8 +266,8 @@ class Uri {
         var paramArr = str.split('&');
         for (let i = 0; i < paramArr.length; i++) {
             let temp = paramArr[i].split('=');
-            if (temp.length === 2 && temp[0] !== '') {
-                this._search.push([temp[0], temp[1]]);
+            if (temp[0]!== '') {
+                this._search.push([temp[0], (temp[1]===undefined ? '':temp[1])]);
             }
         }
     }
