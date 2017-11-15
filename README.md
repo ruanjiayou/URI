@@ -1,6 +1,6 @@
 # 设计说明
 ```
-解析HTML中的URI，包括 [href][src] ftp: malto: tel: http: https: // javascript: / 其他
+解析HTML中的URI，包括  ftp: malto: tel: http: https: // javascript: 等协议
 ```
 ---
 - **成员变量**
@@ -38,4 +38,50 @@
     添加测试用例
 2017-11-13 17:16:23
     补充单元测试用例
+2017-11-15 15:19:23
+    发布到npm
+```
+---
+### 使用方法
+解析一个正常的网址
+```
+var Uri = require('uri-parser-helper');
+var uri1 = new Uri('http://ruan:123456@jiayou.com:8080/admin/cate/index.html?time=48524124&token=ds45d45d124d542d#top');
+var uri2 = new Uri().parse('http://www.baidu.com');
+var uri3 = uri2.creat('/images/2017-11/default.png');
+var uri4 = uri3.shortOf(uri2);
+var uri5 = new Uri().format({
+    protocol: 'http:',
+    username: 'ruanjiayou',
+    password: '123456',
+    hostname: 'jiayou.com',
+    port: '8080',
+    pathname: '/admin/index.html',
+    hash: '#top',
+    search: '?time=3333'
+});
+var url  = uri4.toString();
+
+// 协议名称 http:
+console.log(uri1.protocol);
+// 用户名 ruan
+console.log(uri1.username);
+// 用户密码 123456
+console.log(uri1.password);
+// 主机名 iayou.com (可以是ip的形式 192.168.1.1)
+console.log(uri1.hostname);
+// 端口 8080
+console.log(uri1.port);
+// 路径 /admin/cate/index.html
+console.log(uri1.pathname);
+// 查询参数 ?time=48524124&token=ds45d45d124d542d
+console.log(uri1.search);
+// 锚点 #top
+console.log(uri1.hash);
+// 获取指定的查询参数值
+console.log(uri1.query('time'));
+```
+
+git地址： https://github.com/ruanjiayou/URI
+安装方法： npm install uri-parser-helper --save-dev
 ```
