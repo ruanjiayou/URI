@@ -208,7 +208,7 @@ class Uri {
             diffIndex = 0,
             i = 0,
             res = '';
-        if(ps.length>0 && /.[.]./.test(ps[ps.length-1])){
+        if (ps.length > 0 && /.[.]./.test(ps[ps.length - 1])) {
             ps.pop();
         }
         // compare directory
@@ -219,7 +219,7 @@ class Uri {
             }
         }
         ps.splice(0, diffIndex);
-        res += ps.map(function(item){ return '../'; }).join('');
+        res += ps.map(function (item) { return '../'; }).join('');
         res += cs.splice(diffIndex).join('/');
         return res + this.search + this.hash;
     }
@@ -227,13 +227,8 @@ class Uri {
      * 获取参数值
      * @param {string} key - 参数名称
      */
-    query(key){
-        for(var i = this._search.length-1;i>=0;i--){
-            if(key === this._search[i][0]){
-                return this._search[i][1];
-            }
-        }
-        return null;
+    query(key) {
+        return this._search[key];
     }
     set protocol(str) {
         this._protocol = /^([0-9a-z]+)[:]?$/i.test(str.toLowerCase()) ? RegExp.$1 + ':' : 'http:';
@@ -257,23 +252,36 @@ class Uri {
             return encodeURIComponent(match);
         });
     }
-    set search(str) {
-        str = str.replace('#', '%23');
-        if (str && str.charAt(0) === '?') {
-            str = str.substring(1);
-        }
-        this._search = [];
-        var paramArr = str.split('&');
-        for (let i = 0; i < paramArr.length; i++) {
-            let temp = paramArr[i].split('=');
-            if (temp[0]!== '') {
-                this._search.push([temp[0], (temp[1]===undefined ? '':temp[1])]);
-            }
+    /**
+     * 先置空,再根据参数设置 
+     * @param {string|object} o - search值
+     */
+    set search(o) {
+        this._search = {};
+        switch (typeof o) {
+            case 'string':
+                if (o && o.charAt(0) === '?') {
+                    o = o.substring(1);
+                }
+                var paramArr = o.split('&');
+                for (let i = 0; i < paramArr.length; i++) {
+                    let temp = paramArr[i].split('=');
+                    if (temp[0] !== '') {
+                        this._search[temp[0]] = (this._search[temp[0]]) ? [this._search[temp[0]], temp[1]] : temp[1] || '';
+                    }
+                }
+                break;
+            case 'object':
+                for (let k in o) {
+                    this._search[k] = o[k];
+                }
+                break;
+            default: break;
         }
     }
     set hash(str) {
-        if (str && str.charAt(0) !== '#') {
-            str = `#${str}`;
+        if (str && str.charAt(0) === '#') {
+            str = str.substring(1);
         }
         this._hash = str;
     }
@@ -332,13 +340,19 @@ class Uri {
         return Uri.HREF.has(this.protocol) && this._pathname.charAt(0) !== '/' ? `/${this._pathname}` : this._pathname;
     }
     get search() {
-        let res = this._search.map(function (item) {
-            return `${item[0]}=${item[1]}`;
-        }).join('&');
-        return res === '' ? '' : `?${res}`;
+        let res = '';
+        for (let k in this._search) {
+            let v = this._search[k];
+            if(v===''){
+                res += `&${k}`;
+            } else {
+                res += (typeof v === 'object') ? '&' + v.map(function (item) { return `${k}=${item}`; }).join('&') : `&${k}=${v}`;
+            }
+        };
+        return res === '' ? '' : `?${encodeURI(res.substr(1))}`;
     }
     get hash() {
-        return this._hash;
+        return this._hash === '' ? '' : `#${encodeURI(this._hash)}`;
     }
     get other() {
         return this._other;

@@ -40,6 +40,12 @@
     补充单元测试用例
 2017-11-15 15:19:23
     发布到npm
+2017-12-17 16:15:08
+    search字符串的处理:设置/获取key(key可能有多个,例如:type=a&type=b.服务器取到的是type=['a','b']) 
+    encodeURI()
+    该方法不会对 ASCII 字母和数字进行编码，也不会对这些 ASCII 标点符号进行编码： - _ . ! ~ * ' ( ) 。
+
+该方法的目的是对 URI 进行完整的编码，因此对以下在 URI 中具有特殊含义的 ASCII 标点符号，encodeURI() 函数是不会进行转义的：;/?:@&=+$,#
 ```
 ---
 ### 使用方法
@@ -81,7 +87,7 @@ console.log(uri1.hash);
 // 获取指定的查询参数值
 console.log(uri1.query('time'));
 ```
-
+```
 git地址： https://github.com/ruanjiayou/URI
 安装方法： npm install uri-parser-helper --save-dev
 ```

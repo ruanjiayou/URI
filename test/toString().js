@@ -11,6 +11,14 @@ describe('Uri.toString()', function(){
         var uri_https = new Uri('https://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
         assert.equal(uri_https.toString(), 'https://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
     });
+    it('test search encodeURI->', function(){
+        var uri_search1 = new Uri('http://www.jiayou.com/?name=阮');
+        var uri_search2 = new Uri('http://www.jiayou.com/?type=1&type=2');
+        var uri_search3 = new Uri('http://www.jiayou.com/?nossesion');
+        assert.equal(uri_search1.search,'?name=%E9%98%AE');
+        assert.equal(uri_search2.search,'?type=1&type=2');
+        assert.equal(uri_search3.search,'?nossesion');
+    });
     it('ftp->', function(){
         var uri_ftp = new Uri('ftp://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
         assert.equal(uri_ftp.toString(), 'ftp://ruanjiayou:123456@jiayou.com:8080/admin/index.html?time=3333&redirect=/#top');
