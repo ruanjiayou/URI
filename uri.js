@@ -230,6 +230,13 @@ class Uri {
     query(key) {
         return this._search[key];
     }
+    /**
+     * 返回url的拓展名(小写) 或 ''
+     */
+    ext(){
+        let m = /[.]([\w]+)$/.exec(this.pathname);
+        return m ? m[1].toLowerCase() : '';
+    }
     set protocol(str) {
         this._protocol = /^([0-9a-z]+)[:]?$/i.test(str.toLowerCase()) ? RegExp.$1 + ':' : 'http:';
     }

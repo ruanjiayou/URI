@@ -24,6 +24,8 @@
 - *format()* 格式化URI格式的JSON对象
 - *create()* 依据当前URI对象，把字符串解析新的URI对象
 - *shortOf()* 相对目标页的路径
+- query() 获取请求参数
+- ext() 获取url拓展名
 - ~~*isPaging()* 判断是否是分页~~
 ---
 ### 更新日志
