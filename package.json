@@ -1,6 +1,6 @@
 {
   "name": "uri-parser-helper",
-  "version": "0.0.1",
+  "version": "1.0.3",
   "description": "URI解析",
   "main": "uri.js",
   "directories": {
