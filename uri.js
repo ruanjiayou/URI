@@ -1,3 +1,4 @@
+const qs = require('qs');
 class Uri {
     /**
      * @constructor
@@ -233,7 +234,7 @@ class Uri {
     /**
      * 返回url的拓展名(小写) 或 ''
      */
-    ext(){
+    ext() {
         let m = /[.]([\w]+)$/.exec(this.pathname);
         return m ? m[1].toLowerCase() : '';
     }
@@ -264,27 +265,7 @@ class Uri {
      * @param {string|object} o - search值
      */
     set search(o) {
-        this._search = {};
-        switch (typeof o) {
-            case 'string':
-                if (o && o.charAt(0) === '?') {
-                    o = o.substring(1);
-                }
-                var paramArr = o.split('&');
-                for (let i = 0; i < paramArr.length; i++) {
-                    let temp = paramArr[i].split('=');
-                    if (temp[0] !== '') {
-                        this._search[temp[0]] = (this._search[temp[0]]) ? [this._search[temp[0]], temp[1]] : temp[1] || '';
-                    }
-                }
-                break;
-            case 'object':
-                for (let k in o) {
-                    this._search[k] = o[k];
-                }
-                break;
-            default: break;
-        }
+        this._search = qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o);
     }
     set hash(str) {
         if (str && str.charAt(0) === '#') {
@@ -347,16 +328,8 @@ class Uri {
         return Uri.HREF.has(this.protocol) && this._pathname.charAt(0) !== '/' ? `/${this._pathname}` : this._pathname;
     }
     get search() {
-        let res = '';
-        for (let k in this._search) {
-            let v = this._search[k];
-            if(v===''){
-                res += `&${k}`;
-            } else {
-                res += (typeof v === 'object') ? '&' + v.map(function (item) { return `${k}=${item}`; }).join('&') : `&${k}=${v}`;
-            }
-        };
-        return res === '' ? '' : `?${encodeURI(res.substr(1))}`;
+        let res = qs.stringify(this._search);
+        return res === '' ? '' : `?${decodeURIComponent(res)}`;
     }
     get hash() {
         return this._hash === '' ? '' : `#${encodeURI(this._hash)}`;
