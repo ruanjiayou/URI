@@ -1,6 +1,6 @@
 {
   "name": "uri-parser-helper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "URI解析",
   "main": "uri.js",
   "directories": {
@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/ruanjiayou/URI/issues"
   },
-  "homepage": "https://github.com/ruanjiayou/URI#readme"
+  "homepage": "https://github.com/ruanjiayou/URI#readme",
+  "dependencies": {
+    "path-to-regexp": "^2.1.0",
+    "qs": "^6.5.1"
+  }
 }

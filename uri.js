@@ -1,4 +1,6 @@
 const qs = require('qs');
+const pathToRegexp = require('path-to-regexp');
+
 class Uri {
     /**
      * @constructor
@@ -237,6 +239,20 @@ class Uri {
     ext() {
         let m = /[.]([\w]+)$/.exec(this.pathname);
         return m ? m[1].toLowerCase() : '';
+    }
+    /**
+     * 匹配指定模式路由,返回null或json
+     */
+    match(pat) {
+        let res = {};
+        let m = pat.re.exec(this.pathname);
+        if (m === null) {
+            return null;
+        }
+        pat.keys.forEach(function (item, index) {
+            res[item.name] = m[index + 1];
+        });
+        return res;
     }
     set protocol(str) {
         this._protocol = /^([0-9a-z]+)[:]?$/i.test(str.toLowerCase()) ? RegExp.$1 + ':' : 'http:';
