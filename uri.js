@@ -281,7 +281,7 @@ class Uri {
      * @param {string|object} o - search值
      */
     set search(o) {
-        this._search = qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o);
+        this._search = typeof o === 'object' ? o : (qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o));
     }
     set hash(str) {
         if (str && str.charAt(0) === '#') {
