@@ -20,7 +20,7 @@ class Uri {
         // 路径 file协议也是这个
         this.pathname = '';
         // 查询参数 ?开头
-        this.search = '';
+        this._search = {};
         // 锚点 #开头
         this.hash = '';
         // other 
@@ -278,11 +278,20 @@ class Uri {
         });
     }
     /**
-     * 先置空,再根据参数设置 
+     * undefined会被删掉,null则转为空字符串
      * @param {string|object} o - search值
      */
     set search(o) {
-        this._search = typeof o === 'object' ? o : (qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o));
+        o = typeof o === 'object' ? o : (qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o));
+        for (let k in o) {
+            if (o[k] === undefined) {
+                delete this._search[k];
+            } else if (o[k] === null) {
+                this._search[k] = '';
+            } else {
+                this._search[k] = o[k];
+            }
+        }
     }
     set hash(str) {
         if (str && str.charAt(0) === '#') {

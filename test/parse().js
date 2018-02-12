@@ -142,6 +142,19 @@ describe('Uri.parse()', function () {
     });
     it('parse 前后有空格', function () {
         var o = new Uri(' http://www.jiayou.com/test ');
-        console.log(o);
+        assert.equal(o.protocol, 'http:');
+        assert.equal(o.pathname, '/test');
+    });
+    it('setter search', function () {
+        var o = new Uri('http://www.jiayou.com/test?limit=1&page=1');
+        o.search = {
+            md5: 1
+        };
+        assert.equal(o.search, '?limit=1&page=1&md5=1');
+        o.search = {
+            md5: null,
+            page: undefined
+        };
+        assert.equal(o.search, '?limit=1&md5=');
     });
 });
