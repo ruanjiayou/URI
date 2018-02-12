@@ -26,7 +26,7 @@ class Uri {
         // other 
         this.other = '';
         if (str) {
-            this.parse(str);
+            this.parse(str.trim());
         }
     }
     /**
@@ -151,6 +151,7 @@ class Uri {
             index,
             path = '',
             other = '';
+        str = str.trim();
         if (/^(\w+)[:](.+)$/.test(str) || /^[/]{2}(.+)/.test(str)) {
             return new Uri(str);
         }

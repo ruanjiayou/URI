@@ -36,7 +36,7 @@ describe('Uri.parse()', function () {
         assert.deepEqual(uri2._search, { 's': ['1', '2'] });
         assert.deepEqual(uri3._search, { 's': ['1', '2'] });
         assert.deepEqual(uri4._search, { s: ['2', '1'] });
-        assert.deepEqual(uri5._search, { s: { s1: '1' ,'0': '2' } });
+        assert.deepEqual(uri5._search, { s: { s1: '1', '0': '2' } });
         assert.deepEqual(uri6._search, { s: { s1: '1', '2': '2' } });
 
         assert.equal(uri1.search, '?s[0]=1&s[1]=2');
@@ -135,5 +135,13 @@ describe('Uri.parse()', function () {
         assert.equal(o.protocol, 'http:');
         assert.equal(o.hostname, '192.168.1.11');
         assert.equal(o.port, '80');
+    });
+    it('parse !origin', function () {
+        var o = new Uri('http://www.jiayou.com:9010/test.jpeg!origin');
+        assert.equal(o.pathname, '/test.jpeg!origin');
+    });
+    it('parse 前后有空格', function () {
+        var o = new Uri(' http://www.jiayou.com/test ');
+        console.log(o);
     });
 });
