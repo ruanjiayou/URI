@@ -283,15 +283,7 @@ class Uri {
      */
     set search(o) {
         o = typeof o === 'object' ? o : (qs.parse(o.substr(0, 1) === '?' ? o.substr(1) : o));
-        for (let k in o) {
-            if (o[k] === undefined) {
-                delete this._search[k];
-            } else if (o[k] === null) {
-                this._search[k] = '';
-            } else {
-                this._search[k] = o[k];
-            }
-        }
+        this._search = o;
     }
     set hash(str) {
         if (str && str.charAt(0) === '#') {

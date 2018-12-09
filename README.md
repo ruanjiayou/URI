@@ -1,4 +1,8 @@
 # 设计说明
+[![Build Status](https://travis-ci.org/ruanjiayou/URI.svg)](https://travis-ci.org/xiaomai7758/URI)
+[![Coverage Status](https://coveralls.io/repos/github/xiaomai7758/URI/badge.svg?branch=master)](https://coveralls.io/github/xiaomai7758/URI?branch=master)
+[![](https://img.shields.io/npm/dm/uri-parser-helper.svg)](https://www.npmjs.com/package/uri-parser-helper)
+
 ```
 解析HTML中的URI，包括  ftp: malto: tel: http: https: // javascript: 等协议
 ```

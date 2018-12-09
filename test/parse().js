@@ -150,11 +150,11 @@ describe('Uri.parse()', function () {
         o.search = {
             md5: 1
         };
-        assert.equal(o.search, '?limit=1&page=1&md5=1');
+        assert.equal(o.search, '?md5=1');
         o.search = {
             md5: null,
             page: undefined
         };
-        assert.equal(o.search, '?limit=1&md5=');
+        assert.equal(o.search, '?md5=');
     });
 });
