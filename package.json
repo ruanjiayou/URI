@@ -1,0 +1,37 @@
+{
+  "name": "uri-parser-helper",
+  "version": "1.0.7",
+  "description": "URI解析",
+  "main": "uri.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/*.js",
+    "cov": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:ruanjiayou/URI.git"
+  },
+  "keywords": [
+    "js",
+    "uri",
+    "parse"
+  ],
+  "author": "ruanjiayou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ruanjiayou/URI/issues"
+  },
+  "homepage": "https://github.com/ruanjiayou/URI#readme",
+  "dependencies": {
+    "path-to-regexp": "^2.1.0",
+    "qs": "^6.5.1"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0"
+  }
+}
